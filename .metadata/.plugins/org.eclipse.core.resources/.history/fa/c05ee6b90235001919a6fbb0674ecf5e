@@ -1,0 +1,30 @@
+package com.marcelo.inter.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.marcelo.inter.model.SingleUnit;
+import com.marcelo.inter.repository.SingleUnitRepository;
+
+@RestController
+@RequestMapping(path = "/unit")
+public class SingleUnitController {
+
+	@Autowired
+	private SingleUnitRepository repo;
+	
+	@GetMapping()
+	public ResponseEntity<?> getList() {
+		List<SingleUnit> singleUnitList = repo.findAll();
+		if(singleUnitList.isEmpty()) {
+			return new ResponseEntity<>("There is no single unit registered", HttpStatus.OK);
+		}
+		return new ResponseEntity<>(singleUnitList, HttpStatus.OK);
+	}
+}

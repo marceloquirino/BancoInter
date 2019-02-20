@@ -1,0 +1,5 @@
+package com.marcelo.inter.repository;
+
+public class JobRepository {
+
+}

@@ -1,0 +1,51 @@
+package com.marcelo.inter.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.marcelo.inter.model.Job;
+import com.marcelo.inter.repository.JobRepository;
+
+@RestController
+@RequestMapping(path = "/job")
+public class JobController {
+
+	@Autowired
+	private JobRepository jobRepo;
+
+	  
+	@RequestMapping(value = "/job/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getJobById(@PathVariable("id") Integer id) {
+		Optional<Job> job = jobRepo.findById(id);
+   
+		if (job.isPresent()) {
+			return new ResponseEntity<>(job, HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+   
+		
+	}
+  
+	@RequestMapping(value = "/removecurso/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deletar(@PathVariable("id") int id) {
+		if(jobRepo.existsById(id)) {
+			jobRepo.deleteById(id);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+   
+	}
+}

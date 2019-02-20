@@ -1,0 +1,12 @@
+package com.marcelo.inter.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.marcelo.inter.model.*;
+
+public interface JobRepository extends JpaRepository<Job, Integer> {
+	
+	@Query("SELECT j FROM Job j WHERE j.name=?1")
+	public Job getByName(String name);
+}

@@ -1,0 +1,11 @@
+package com.marcelo.inter.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.marcelo.inter.model.*;
+
+public interface JobRepository extends JpaRepository<Job, Integer> {
+	public Optional<Job> findById(Integer id);
+}

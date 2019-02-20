@@ -1,0 +1,22 @@
+package com.marcelo.inter.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.marcelo.inter.model.Task;
+import com.marcelo.inter.repository.TaskRepository;
+
+@RestController
+@RequestMapping(path = "/task")
+public class TaskController {
+
+	@Autowired
+	private TaskRepository taskRepository;
+	
+	@GetMapping
+	public Iterable<Task> list(){
+		return taskRepository.findAll();
+	}
+}

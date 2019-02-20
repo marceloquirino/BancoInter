@@ -1,0 +1,5 @@
+package com.marcelo.inter.model;
+
+public class Task {
+
+}
