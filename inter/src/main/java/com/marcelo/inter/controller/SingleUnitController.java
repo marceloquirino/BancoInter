@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,8 +49,8 @@ public class SingleUnitController {
 		if(Util.IsNullOrEmpty(payload.getStringNumber())) {
 			return new ResponseEntity<>("The stringNumber is required", HttpStatus.FORBIDDEN);
 		}
-		if(payload.getNumberTimes() == null || payload.getNumberTimes() ==0) {
-			return new ResponseEntity<>("The numberTimes is required", HttpStatus.FORBIDDEN);
+		if(!Util.IsBiggerThen(0, payload.getNumberTimes())) {
+			return new ResponseEntity<>("The numberTimes is required and bigger then 0", HttpStatus.FORBIDDEN);
 		}
 		payload.setResultByCalculation();
 		SingleUnit createdData = repo.save(payload);
@@ -59,8 +60,7 @@ public class SingleUnitController {
 	
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> updateById(@PathVariable("id") Integer id, @RequestBody SingleUnit payload){
-		Optional<SingleUnit> singleUnitOpt = repo.findById(id);
-		if(!singleUnitOpt.isPresent()) {
+		if(!repo.existsById(id)) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		if(Util.IsNullOrEmpty(payload.getStringNumber())) {
@@ -73,8 +73,17 @@ public class SingleUnitController {
 			payload.setId(id);
 		}
 		payload.setResultByCalculation();
-		SingleUnit createdData = repo.save(payload);
+		SingleUnit updatedData = repo.save(payload);
 		
-		return new ResponseEntity<>(createdData, HttpStatus.CREATED);
+		return new ResponseEntity<>(updatedData, HttpStatus.OK);
+	}
+	
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<?> delete(@PathVariable("id") Integer id){
+		if(!repo.existsById(id)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		repo.deleteById(id);
+		return new ResponseEntity<>("Single unit of id="+id+" was deleted", HttpStatus.OK);
 	}
 }

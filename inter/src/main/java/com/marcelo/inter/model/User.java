@@ -22,10 +22,42 @@ public class User {
 	
 	@Column(nullable=false)
 	private String name;
-	
+
 	@Column(nullable=false)
 	private String email;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<SingleUnit> singleUnitList = new ArrayList<SingleUnit>();
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public List<SingleUnit> getSingleUnitList() {
+		return singleUnitList;
+	}
+
+	public void setSingleUnitList(List<SingleUnit> singleUnitList) {
+		this.singleUnitList = singleUnitList;
+	}
 }

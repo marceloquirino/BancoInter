@@ -1,0 +1,80 @@
+package com.marcelo.inter.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.marcelo.inter.model.SingleUnit;
+import com.marcelo.inter.repository.SingleUnitRepository;
+import com.marcelo.inter.util.Util;
+
+@RestController
+@RequestMapping(path = "/unit")
+public class SingleUnitController {
+
+	@Autowired
+	private SingleUnitRepository repo;
+	
+	@GetMapping()
+	public ResponseEntity<?> getList() {
+		List<SingleUnit> singleUnitList = repo.findAll();
+		if(singleUnitList.isEmpty()) {
+			return new ResponseEntity<>("There is no single unit registered", HttpStatus.OK);
+		}
+		return new ResponseEntity<>(singleUnitList, HttpStatus.OK);
+	}
+	  
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<?> getById(@PathVariable("id") Integer id) {
+		Optional<SingleUnit> singleUnitOpt = repo.findById(id);
+		if(singleUnitOpt.isPresent()) {
+			return new ResponseEntity<>(singleUnitOpt, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	
+	@PostMapping()
+	public ResponseEntity<?> create(@RequestBody SingleUnit payload){
+		if(Util.IsNullOrEmpty(payload.getStringNumber())) {
+			return new ResponseEntity<>("The stringNumber is required", HttpStatus.FORBIDDEN);
+		}
+		if(payload.getNumberTimes() == null || payload.getNumberTimes() ==0) {
+			return new ResponseEntity<>("The numberTimes is required", HttpStatus.FORBIDDEN);
+		}
+		payload.setResultByCalculation();
+		SingleUnit createdData = repo.save(payload);
+		
+		return new ResponseEntity<>(createdData, HttpStatus.CREATED);
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<?> updateById(@PathVariable("id") Integer id, @RequestBody SingleUnit payload){
+		Optional<SingleUnit> singleUnitOpt = repo.findById(id);
+		if(!singleUnitOpt.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		if(Util.IsNullOrEmpty(payload.getStringNumber())) {
+			return new ResponseEntity<>("The stringNumber is required", HttpStatus.FORBIDDEN);
+		}
+		if(payload.getNumberTimes() == null || payload.getNumberTimes() ==0) {
+			return new ResponseEntity<>("The numberTimes is required", HttpStatus.FORBIDDEN);
+		}
+		if(payload.getId() == null) {
+			payload.setId(id);
+		}
+		payload.setResultByCalculation();
+		SingleUnit updatedData = repo.save(payload);
+		
+		return new ResponseEntity<>(updatedData, HttpStatus.OK);
+	}
+}
