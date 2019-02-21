@@ -6,6 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+
+@CacheConfig(cacheNames={"soma"})
 @Entity
 public class SingleUnit {
 
@@ -59,6 +63,22 @@ public class SingleUnit {
 	public void setResultByCalculation() {
 		this.setResult(calculateSingleDigit(concatStringByNumber()));
 	}
+	
+	@Cacheable
+	public static int soma(int a, int b) {
+		simulateSlowService();
+		return a+b;
+	}
+	
+	private static void simulateSlowService() {
+        try {
+            long time = 3000L;
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+	
 	
 	private Integer calculateSingleDigit(String stringNumberForCalculation) {
 		Integer calculationResult = 0;

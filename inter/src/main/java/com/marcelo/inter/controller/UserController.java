@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.marcelo.inter.model.SingleUnit;
 import com.marcelo.inter.model.User;
 import com.marcelo.inter.repository.UserRepository;
+import com.marcelo.inter.util.RSACryptography;
 import com.marcelo.inter.util.Util;
 
 @RestController
@@ -89,6 +90,25 @@ public class UserController {
 
 		User createdData = repo.save(payload);
 		return new ResponseEntity<>(createdData, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/encrypt/{id}")
+	public ResponseEntity<?> updateById(@PathVariable("id") Integer id, @RequestBody String pKey){
+		Optional<User> userOpt = repo.findById(id);
+		if(!userOpt.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		userOpt.ifPresent(user ->{
+			try {
+			user.setEmail(RSACryptography.encrypt(user.getEmail(), pKey));
+			user.setName(RSACryptography.encrypt(user.getName(), pKey));
+			repo.save(user);
+			}catch(Exception e) {
+				int a =1;
+			}
+		}); 
+		return new ResponseEntity<>(userOpt, HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "/{id}")

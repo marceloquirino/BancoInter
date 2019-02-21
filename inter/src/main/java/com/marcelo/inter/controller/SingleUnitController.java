@@ -55,6 +55,8 @@ public class SingleUnitController {
 		payload.setResultByCalculation();
 		SingleUnit createdData = repo.save(payload);
 		
+		int a = SingleUnit.soma(3, 4);
+		
 		return new ResponseEntity<>(createdData, HttpStatus.CREATED);
 	}
 	
